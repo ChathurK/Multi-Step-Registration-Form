@@ -2,9 +2,10 @@ import React from 'react'
 import { useRegistration } from '../context/RegistrationContext'
 import { step1Validation, step2Validation } from '../utils/validation';
 import StepIndicator from '../components/StepIndicator';
+import { registerUser } from '../services/apiService';
 
 const RegistrationForm = () => {
-    const { currentStep, setCurrentStep, formData, updateFormData, errors, setErrors } = useRegistration();
+    const { currentStep, setCurrentStep, formData, updateFormData, loading, setLoading, errors, setErrors } = useRegistration();
 
 
     const handlChange = (event) => {
@@ -38,7 +39,31 @@ const RegistrationForm = () => {
             const validation = step2Validation(formData);
 
             if (validation.isValid) {
-                console.log('Form Submitted!', formData)
+                try {
+                    setLoading(true)
+                    const result = registerUser(formData)
+                    console.log("Form Submitted!")
+                    console.log("Waiting for confirmation...", formData)
+
+                    if (result.success) {
+                        console.log("Registration successful!", result.data)
+                        console.log("Redirecting...")
+                        setTimeout(setCurrentStep(1), 2000)
+
+                    } else {
+                        console.error("Registration failed", result.error)
+                        alert("Registration failed. Please try again.")
+                        
+                    }
+                    
+                } catch (error) {
+                    console.error(error)
+                    alert("Error occured.")
+
+                } finally {
+                    setLoading(false)
+                }
+
             } else {
                 setErrors(validation.errors)
                 console.error(validation.errors)
@@ -135,7 +160,9 @@ const RegistrationForm = () => {
 
                     <div>
                         <button type="button" onClick={handleClickBack} disabled={currentStep === 1}>Back</button>
-                        <button onClick={handleClick}>{currentStep === 1 ? 'Next' : 'Submit'}</button>
+                        <button onClick={handleClick} disabled={loading}>
+                            {currentStep === 1 ? 'Next' : loading ? "Submitting..." : "Submit"}
+                        </button>
                     </div>
 
                 </form>
