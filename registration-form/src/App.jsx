@@ -1,4 +1,5 @@
-import { RegistrationProvider } from "./contexts/RegistrationContext"
+import { RegistrationProvider } from "./context/RegistrationContext"
+import RegistrationForm from "./pages/RegistrationForm"
 
 function App() {
   return (
@@ -7,10 +8,12 @@ function App() {
 
       <div className="App">
         <h1>Registration Form</h1>
+        <RegistrationForm />
+        
       </div>
 
     </RegistrationProvider>
-    
+
   )
 }
 
