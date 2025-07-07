@@ -1,0 +1,19 @@
+.stepIndicatorBorder{
+    border: 1px solid #52525247;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.step1Indicator{
+    border: 6px solid #000000   ;
+    border-radius: 5px;
+    max-width: 50%;
+    transition: 1000ms ease-out ;
+}
+
+.step2Indicator{
+    border: 6px solid #000000   ;
+    border-radius: 5px;
+    max-width: 100%;
+    transition: 1000ms ease-out ;
+}

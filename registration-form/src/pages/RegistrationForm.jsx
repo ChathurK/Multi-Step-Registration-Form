@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRegistration } from '../context/RegistrationContext'
 import { step1Validation, step2Validation } from '../utils/validation';
+import StepIndicator from '../components/StepIndicator';
 
 const RegistrationForm = () => {
     const { currentStep, setCurrentStep, formData, updateFormData, errors, setErrors } = useRegistration();
@@ -8,7 +9,7 @@ const RegistrationForm = () => {
 
     const handlChange = (event) => {
         const { name, value } = event.target;
-        
+
         updateFormData(name, value);
 
         setErrors((prev) => ({
@@ -22,7 +23,7 @@ const RegistrationForm = () => {
         event.preventDefault();
 
         if (currentStep === 1) {
-            
+
             const validation = step1Validation(formData);
             if (validation.isValid) {
                 setCurrentStep(2);
@@ -31,11 +32,11 @@ const RegistrationForm = () => {
                 setErrors(validation.errors)
                 console.error(validation.errors)
             }
-            
+
         } else {
 
             const validation = step2Validation(formData);
-            
+
             if (validation.isValid) {
                 console.log('Form Submitted!', formData)
             } else {
@@ -45,10 +46,17 @@ const RegistrationForm = () => {
         }
     }
 
+    const handleClickBack = (event) => {
+        event.preventDefault();
+
+        setCurrentStep(1);
+    };
+
     return (
         <div>
             <div>
                 <h3>Step {currentStep}</h3>
+                <StepIndicator />
 
 
                 <form>
@@ -125,7 +133,10 @@ const RegistrationForm = () => {
 
                     )}
 
-                    <button onClick={handleClick}>{currentStep === 1 ? 'Next' : 'Submit'}</button>
+                    <div>
+                        <button type="button" onClick={handleClickBack} disabled={currentStep === 1}>Back</button>
+                        <button onClick={handleClick}>{currentStep === 1 ? 'Next' : 'Submit'}</button>
+                    </div>
 
                 </form>
             </div>
