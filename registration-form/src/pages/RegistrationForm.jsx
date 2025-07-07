@@ -2,7 +2,7 @@ import React from 'react'
 import { useRegistration } from '../context/RegistrationContext'
 
 const RegistrationForm = () => {
-    const { currentStep, formData, updateFormData } = useRegistration();
+    const { currentStep, setCurrentStep, formData, updateFormData } = useRegistration();
 
 
     const handlChange = (event) => {
@@ -11,8 +11,17 @@ const RegistrationForm = () => {
     }
 
 
-    const handleClick = () => {
+    const handleClick = (event) => {
+        event.preventDefault();
 
+        if (currentStep === 1) {
+            
+            setCurrentStep(2)
+            
+        } else {
+            
+            console.log('Form Submitted!', formData)
+        }
     }
 
     return (
