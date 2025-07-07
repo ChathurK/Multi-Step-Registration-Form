@@ -1,14 +1,21 @@
 import React from 'react'
 import { useRegistration } from '../context/RegistrationContext'
+import { step1Validation, step2Validation } from '../utils/validation';
 
 const RegistrationForm = () => {
-    const { currentStep, setCurrentStep, formData, updateFormData } = useRegistration();
+    const { currentStep, setCurrentStep, formData, updateFormData, errors, setErrors } = useRegistration();
 
 
     const handlChange = (event) => {
         const { name, value } = event.target;
+        
         updateFormData(name, value);
-    }
+
+        setErrors((prev) => ({
+            ...prev,
+            [name]: '',
+        }));
+    };
 
 
     const handleClick = (event) => {
@@ -16,11 +23,25 @@ const RegistrationForm = () => {
 
         if (currentStep === 1) {
             
-            setCurrentStep(2)
+            const validation = step1Validation(formData);
+            if (validation.isValid) {
+                setCurrentStep(2);
+                setErrors({});
+            } else {
+                setErrors(validation.errors)
+                console.error(validation.errors)
+            }
             
         } else {
+
+            const validation = step2Validation(formData);
             
-            console.log('Form Submitted!', formData)
+            if (validation.isValid) {
+                console.log('Form Submitted!', formData)
+            } else {
+                setErrors(validation.errors)
+                console.error(validation.errors)
+            }
         }
     }
 
@@ -45,6 +66,7 @@ const RegistrationForm = () => {
                                     onChange={handlChange}
                                     required
                                 />
+                                {errors.fullName && <div>{errors.fullName}</div>}
                             </div>
                             <div>
                                 <label htmlFor="fullName">Email:</label><br />
@@ -56,6 +78,7 @@ const RegistrationForm = () => {
                                     onChange={handlChange}
                                     required
                                 />
+                                {errors.email && <div>{errors.email}</div>}
                             </div>
                             <div>
                                 <label htmlFor="fullName">Phone Number:</label><br />
@@ -84,6 +107,7 @@ const RegistrationForm = () => {
                                     onChange={handlChange}
                                     required
                                 />
+                                {errors.password && <div>{errors.password}</div>}
                             </div>
                             <div>
                                 <label htmlFor="confirmPassword">Confirm Password</label><br />
@@ -95,6 +119,7 @@ const RegistrationForm = () => {
                                     onChange={handlChange}
                                     required
                                 />
+                                {errors.confirmPassword && <div>{errors.confirmPassword}</div>}
                             </div>
                         </div>
 
