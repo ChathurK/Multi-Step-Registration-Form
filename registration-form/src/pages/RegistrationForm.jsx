@@ -3,9 +3,10 @@ import { useRegistration } from '../context/RegistrationContext'
 import { step1Validation, step2Validation } from '../utils/validation';
 import StepIndicator from '../components/StepIndicator';
 import { registerUser } from '../services/apiService';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 const RegistrationForm = () => {
-    const { currentStep, setCurrentStep, formData, updateFormData, loading, setLoading, errors, setErrors } = useRegistration();
+    const { currentStep, setCurrentStep, formData, resetFormData, updateFormData, loading, setLoading, errors, setErrors } = useRegistration();
 
 
     const handlChange = (event) => {
@@ -20,7 +21,7 @@ const RegistrationForm = () => {
     };
 
 
-    const handleClick = (event) => {
+    const handleClick = async (event) => {
         event.preventDefault();
 
         if (currentStep === 1) {
@@ -41,27 +42,33 @@ const RegistrationForm = () => {
             if (validation.isValid) {
                 try {
                     setLoading(true)
-                    const result = registerUser(formData)
-                    console.log("Form Submitted!")
-                    console.log("Waiting for confirmation...", formData)
+                    const result = await registerUser(formData)
 
                     if (result.success) {
                         console.log("Registration successful!", result.data)
+                        alert("Registration successful!")
                         console.log("Redirecting...")
-                        setTimeout(setCurrentStep(1), 2000)
+                        setErrors({})
+                        setTimeout(() => {
+                            setCurrentStep(1)
+                            resetFormData()
+                            setLoading(false)
+                        }, 2000);
 
                     } else {
                         console.error("Registration failed", result.error)
-                        alert("Registration failed. Please try again.")
-                        
+
                     }
-                    
+
                 } catch (error) {
                     console.error(error)
-                    alert("Error occured.")
 
                 } finally {
-                    setLoading(false)
+                    setTimeout(() => {
+                        setLoading(false)
+                        setCurrentStep(1)
+                        resetFormData()
+                    }, 5000);
                 }
 
             } else {
@@ -76,6 +83,10 @@ const RegistrationForm = () => {
 
         setCurrentStep(1);
     };
+
+    if (loading) {
+        return <LoadingIndicator />
+    }
 
     return (
         <div>
@@ -167,7 +178,6 @@ const RegistrationForm = () => {
 
                 </form>
             </div>
-            <p></p>
         </div>
     )
 }

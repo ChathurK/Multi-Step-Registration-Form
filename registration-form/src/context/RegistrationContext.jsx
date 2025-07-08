@@ -25,11 +25,22 @@ export const RegistrationProvider = ({ children }) => {
     }));
   };
 
+  const resetFormData = () => {
+    setFormData({
+      fullName: '',
+      email: '',
+      phone: '',
+      password: '',
+      confirmPassword: ''
+    })
+  }
+
   const values = {
     currentStep,
     setCurrentStep,
     formData,
     updateFormData,
+    resetFormData,
     errors,
     setErrors,
     loading,
