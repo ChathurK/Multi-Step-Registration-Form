@@ -7,17 +7,47 @@ import LoadingIndicator from '../components/LoadingIndicator';
 
 const RegistrationForm = () => {
     const { currentStep, setCurrentStep, formData, resetFormData, updateFormData, loading, setLoading, errors, setErrors } = useRegistration();
-
-
+    
     const handlChange = (event) => {
         const { name, value } = event.target;
 
         updateFormData(name, value);
 
-        setErrors((prev) => ({
-            ...prev,
-            [name]: '',
-        }));
+        const updatedFormData = {
+            ...formData,
+            [name]: value
+        }
+
+        // setTimeout(() => {
+        //     if (currentStep === 1) {
+        //         const validation = step1Validation({
+        //             ...formData,
+        //             [name]: value
+        //         })
+                
+        //         setErrors(validation.errors)
+        //     } else {
+        //         const validation = step2Validation({
+        //             ...formData,
+        //             [name]: value
+        //         })
+        //         console.log(validation.errors);
+        //         setErrors(validation.errors)
+        //     }
+        // }, 100);
+
+        if (currentStep === 1) {
+            const validation = step1Validation(updatedFormData)
+            setErrors(validation.errors)
+            // console.log(Object.keys(validation.errors).length);
+            
+            
+        } else {
+            const validation = step2Validation(updatedFormData)
+            setErrors(validation.errors)
+            
+        }
+
     };
 
 
@@ -29,7 +59,7 @@ const RegistrationForm = () => {
             const validation = step1Validation(formData);
             if (validation.isValid) {
                 setCurrentStep(2);
-                setErrors({});
+
             } else {
                 setErrors(validation.errors)
                 console.error(validation.errors)
@@ -57,11 +87,13 @@ const RegistrationForm = () => {
 
                     } else {
                         console.error("Registration failed", result.error)
+                        // setLoading(false)
 
                     }
 
                 } catch (error) {
                     console.error(error)
+                    // setLoading(false)
 
                 } finally {
                     setTimeout(() => {
@@ -80,7 +112,7 @@ const RegistrationForm = () => {
 
     const handleClickBack = (event) => {
         event.preventDefault();
-
+        setErrors({})
         setCurrentStep(1);
     };
 
@@ -171,7 +203,7 @@ const RegistrationForm = () => {
 
                     <div>
                         <button type="button" onClick={handleClickBack} disabled={currentStep === 1}>Back</button>
-                        <button onClick={handleClick} disabled={loading}>
+                        <button onClick={handleClick} disabled={Object.keys(errors).length > 0}>
                             {currentStep === 1 ? 'Next' : loading ? "Submitting..." : "Submit"}
                         </button>
                     </div>
