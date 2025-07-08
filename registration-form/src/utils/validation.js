@@ -1,18 +1,25 @@
 export const step1Validation = (formData) => {
-    
+
     const errors = {};
 
     if (!formData.fullName?.trim()) {
         errors.fullName = "Full name is required";
     }
 
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!formData.email.trim()) {
         errors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!emailRegex.test(formData.email)) {
         errors.email = "Enter a valid email";
     }
-    
+
+    if (formData.phone?.trim()) {
+        if (!/^\+94[0-9]{9}$/.test(formData.phone)) {
+            errors.phone = "Phone must be in format +94xxxxxxxxx (9 digits after +94)";
+        }
+    }
+
 
     return {
         isValid: Object.keys(errors).length === 0,
@@ -22,7 +29,7 @@ export const step1Validation = (formData) => {
 
 
 export const step2Validation = (formData) => {
-    
+
     const errors = {};
 
     if (!formData.password?.trim()) {

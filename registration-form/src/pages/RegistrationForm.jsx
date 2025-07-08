@@ -166,6 +166,7 @@ const RegistrationForm = () => {
                                     onChange={handlChange}
                                     required
                                 />
+                                {errors.phone && <div>{errors.phone}</div>}
                             </div>
                         </div>
                     )}
