@@ -4,7 +4,14 @@ import axios from "axios"
 export const registerUser = async (userData) => {
     try {
         console.log("Form Submitted!")
-        console.log("Waiting for confirmation...", userData)
+        console.log("Waiting for confirmation...")
+        console.log("Payload:", {
+            fullName: userData.fullName,
+            email: userData.email,
+            phone: userData.phone,
+            password: userData.password
+        })
+        
         const response = await axios.post('/api/register', {
             fullName: userData.fullName,
             email: userData.email,
